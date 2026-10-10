@@ -456,6 +456,13 @@ def run(args):
 
 
 def main():
+    # Windows redirected streams can default to a legacy encoding that cannot
+    # represent Chinese CLI messages. Keep console and log output in UTF-8.
+    if sys.platform == "win32":
+        for stream in (sys.stdout, sys.stderr):
+            reconfigure = getattr(stream, "reconfigure", None)
+            if reconfigure is not None:
+                reconfigure(encoding="utf-8", errors="backslashreplace")
     parser = argparse.ArgumentParser(description="Docker Hub/GHCR 并发分片下载，生成 docker save 兼容归档并 docker load")
     parser.add_argument("image", help="如 nginx:latest、user/repo:tag、ghcr.io/owner/image:tag")
     parser.add_argument("--platform", default="linux/amd64", help="默认 linux/amd64")

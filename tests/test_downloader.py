@@ -211,6 +211,18 @@ class TransferTests(unittest.TestCase):
 
 
 class OutputTests(unittest.TestCase):
+    def test_windows_help_handles_legacy_stream_encoding(self):
+        buffer = io.BytesIO()
+        stream = io.TextIOWrapper(buffer, encoding='cp1252')
+        try:
+            with patch.object(app.sys, 'platform', 'win32'), patch.object(app.sys, 'stdout', stream), patch('sys.argv', ['downloader', '--help']), self.assertRaises(SystemExit) as result:
+                app.main()
+            stream.flush()
+            self.assertEqual(result.exception.code, 0)
+            self.assertIn('并发分片下载', buffer.getvalue().decode('utf-8'))
+        finally:
+            stream.close()
+
     def test_failed_export_preserves_existing_file(self):
         with tempfile.TemporaryDirectory() as tmp:
             target = Path(tmp) / 'image.tar'
