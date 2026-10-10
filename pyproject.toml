@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "docker-image-downloader"
+version = "0.1.0"
+description = "Parallel Docker Hub and GHCR downloader with proxy support and Docker load archives"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {file = "LICENSE"}
+dependencies = ["requests>=2.32.3,<3"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent",
+]
+
+[project.optional-dependencies]
+socks = ["PySocks>=1.7.1,<2"]
+zstd = ["zstandard>=0.22,<1"]
+all = ["PySocks>=1.7.1,<2", "zstandard>=0.22,<1"]
+
+[project.scripts]
+docker-image-downloader = "registry_parallel_pull:main"
+
+[project.urls]
+Homepage = "https://github.com/kagamir/docker-image-downloader"
+Issues = "https://github.com/kagamir/docker-image-downloader/issues"
+
+[tool.setuptools]
+py-modules = ["registry_parallel_pull"]
